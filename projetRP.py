@@ -4,59 +4,80 @@ Created on Mon Apr  3 17:18:18 2017
 
 @author: 3306788
 """
+#j'ai separé la lecture du fichier en plusieurs fonctions car c'etait demandé dans l'énoncé
+#mais pour moi c'est plus logique de tout faire dans une seule fonction de lecture
+#je trouve que la partie 2 de l'énoncé est bizarrement faite...
 
-#def read_file(filename):
-#    
-#    #lecture du nombre de rangees, slots par rangee, slots indisponibles, pools et servers
-#    infile = open ( filename, "r" )
-#    rows, slots, unavailable, pools, servers = [ int(x) for x in infile.readline().split() ]    
-#
-#    print rows, slots, unavailable, pools, servers
-#    infile.close()
 
-#lecture de p % des lignes sur les slots non disponibles
+#lecture de p % des lignes concernant les slots indisponibles
 def read_p_rows(filename, p):
     infile = open ( filename, "r" )    
     rows, slots, unavailable, pools, servers = [ int(x) for x in infile.readline().split()]    
     
-    r = int(p*rows/100.)
-    print r
+    #on calcule le nb de lignes a lire
+    r = int(p*unavailable/100.)
 
-    #la case correspondante au slot vaut 1 s'il est disponible, 0 sinon
-    prows = [[1]*slots for i in range(rows)]   
-    
-    #lecture des r premieres lignes sur les slots indisponibles
+    #on remplit uaSlots, liste des r premiers slots indisponibles
+    uaSlots = []   
     for i in range(r):
         row, slot = [ int(x) for x in infile.readline().split() ]
-        prows[row][slot] = 0
+        uaSlots.append([row, slot])
+        #print uaSlots[-1]
+        
 
     infile.close()
-    return prows
+    return uaSlots
     
-#lecture de p % des lignes portant sur les serveurs
+#lecture de p % des lignes concernant les serveurs
 def read_p_servers(filename, p):
     infile = open ( filename, "r" )    
     rows, slots, unavailable, pools, servers = [ int(x) for x in infile.readline().split()]    
     
+    #on saute les lignes concernant les slots 
     for i in range(unavailable):
         infile.readline()
     
     s = int(p*servers/100.)
-    print s
 
-    #s premiers serveurs avec leurs taille et capacite respectives 
+    #on remplit pservers, liste  des s premiers serveurs
+    #avec leurs taille et capacite respectives 
     pservers = []   
-    
-    #lecture des s premieres lignes sur les serveurs
     for i in range(s):
         size, cap = [ int(x) for x in infile.readline().split() ]
         pservers.append([size, cap])
-        print pservers[-1]
+        #print pservers[-1]
 
     infile.close()
     return pservers
     
+
+#read_p_rows('dc.in', 20)
+#read_p_servers('dc.in', 10)
+
+def display(filename):
     
-#read_file('dc.in')
-#print read_p_rows('dc.in', 20)
-read_p_servers('dc.in', 10)
+    #lecture du nombre de rangees, slots par rangee, slots indisponibles, pools et servers
+    infile = open ( filename, "r" )
+    rows, slots, unavailable, pools, servers = [ int(x) for x in infile.readline().split() ]    
+    infile.close()
+    
+    uaSlots = read_p_rows(filename, 100)
+    #servers = read_p_servers(filename, 100)
+
+    #la case correspondante au slot vaut 1 s'il est disponible, 0 sinon    
+    dataCenter = [[1]*slots for i in range(rows)] 
+    
+    for r, s in uaSlots:
+        dataCenter[r][s] = 0
+        
+    
+    for x in dataCenter:
+        print x
+        
+#display('dc.in')
+        
+    
+    
+    
+    
+    
