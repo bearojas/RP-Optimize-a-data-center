@@ -20,7 +20,7 @@ def read_p_rows(filename, p):
     rows, slots, unavailable, pools, servers = [ int(x) for x in infile.readline().split()]    
     
     r = int(p*rows/100.)
-    print r
+    print( r)
 
     #la case correspondante au slot vaut 1 s'il est disponible, 0 sinon
     prows = [[1]*slots for i in range(rows)]   
@@ -42,7 +42,7 @@ def read_p_servers(filename, p):
         infile.readline()
     
     s = int(p*servers/100.)
-    print s
+    print (s)
 
     #s premiers serveurs avec leurs taille et capacite respectives 
     pservers = []   
@@ -51,12 +51,12 @@ def read_p_servers(filename, p):
     for i in range(s):
         size, cap = [ int(x) for x in infile.readline().split() ]
         pservers.append([size, cap])
-        print pservers[-1]
+        print (pservers[-1])
 
     infile.close()
     return pservers
     
     
 #read_file('dc.in')
-#print read_p_rows('dc.in', 20)
+print (read_p_rows('dc.in', 20))
 read_p_servers('dc.in', 10)
