@@ -9,12 +9,11 @@ def read_pct(filename, p):
     
     infile = open ( filename, "r" )    
     rows, slots, unavailable, pools, servers = [ int(x) for x in infile.readline().split()] 
-    print rows, slots, unavailable, pools, servers 
-    
-    
+    #print rows, slots, unavailable, pools, servers 
+        
     #nombre de rangees a conserver
     nbRows = int(p*rows/100.)
-    
+
     #nombre de pools
     nbPools = int(p*pools/100.)
     
@@ -45,20 +44,14 @@ def read_pct(filename, p):
     for i in range(s):
         size, cap = [ int(x) for x in infile.readline().split() ]
         pservers.append([size, cap])    
-    
+        #print pservers[-1]
+
     infile.close()
     return dataCenter, nbPools, pservers
     
 
-    
-    
-
 dc, pools, servers = read_pct('dc.in', 10)
 
-
         
-    
-    
-    
-    
-    
+
+
