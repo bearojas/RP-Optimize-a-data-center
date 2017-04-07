@@ -151,7 +151,7 @@ def glouton_1(filename) :
                 sum_rows[servers_affect[j][0]] += pservers[j][2]
         # puis on fait la somme de toutes les lignes minus une ligne a chaque fois et on garde le min
         min_sum = 250000 
-        for r in range(rows):
+        for r in range(rows): 
             somme = sum(sum_rows)
             somme-=sum_rows[r]
             if somme < min_sum:
