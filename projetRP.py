@@ -37,7 +37,7 @@ def read_perc(filename, perc):
     for r, s in uaSlots:
         #si ce slot est dans les rangees conservees
         if r < nbRows: 
-            dataCenter[r][s] = 'x'
+            dataCenter[r][s] = 'X'
     
     
     #nombre de serveurs a allouer
@@ -57,13 +57,13 @@ def read_perc(filename, perc):
 
 #affichage de l'instance du problème
 def displayInstance (dataCenter, pools, servers) :
-    print "Pourcentage à lire : ", POURCENTAGE  
-    print "Nombre de rangees :", len(dataCenter)
-    print "Nombre de slots par rangee :", len(dataCenter[0])
+    print ("Pourcentage à lire : ", POURCENTAGE)  
+    print ("Nombre de rangees :", len(dataCenter))
+    print ("Nombre de slots par rangee :", len(dataCenter[0]))
     #print "Nombre de slots indisponibles  :", unavailable
-    print "Nombre de serveurs :", len(servers)
-    print "Nombre de pools :", pools
-    print "*************INSTANCE INITIALE****************"
+    print( "Nombre de serveurs :", len(servers))
+    print ("Nombre de pools :", pools)
+    print ("*************INSTANCE INITIALE****************")
     for x in dataCenter:
         print (x)
         
@@ -72,14 +72,15 @@ def displayInstance (dataCenter, pools, servers) :
 def displaySolution(tab_solution, dataCenter, pservers):
     print("************SOLUTION***************")
     for i in range(len(tab_solution)):
-        if tab_solution[i][0] != 'x' :
+        if tab_solution[i][0] != 'X' :
             row = int(tab_solution[i][0])
             slot = int(tab_solution[i][1])
             pool = tab_solution[i][2]
             for j in range(pservers[i][1]):
                 #numero du serveur_numero groupe
                 dataCenter[row][slot+j] = str(i)+"_"+str(pool)
-    print dataCenter
+    for x in dataCenter :
+        print(x)
     
 
 
@@ -95,7 +96,7 @@ def glouton_1(filename) :
     
     #creation d'un tableau de taille nbServers avec pour chaque case un petit tableau 
     #à 3 éléments [rangée, slot, pool] initialisé à x
-    servers_alloc = [['x']*3 for i in range(len(servers))]    
+    servers_alloc = [['X']*3 for i in range(len(servers))]    
     gr = 0 #pool
     
     #pour chaque serveur dans servers
@@ -113,7 +114,7 @@ def glouton_1(filename) :
             cpt = 0
             #on compte le nombre de slots libres tant qu'il reste des slots sur la rangée
             while cpt < nbSlot and j+cpt < slots:
-                if dataCenter[k][j+cpt] == 'x' :
+                if dataCenter[k][j+cpt] == 'X' :
                     j = j+cpt+1
                     cpt = 0
                 else: 
@@ -128,7 +129,7 @@ def glouton_1(filename) :
                 servers_alloc[numServ] = [k,j, gr]
                 gr = (gr+1)%pools
                 for index in range(nbSlot) :
-                    dataCenter[k][j+index]='x'
+                    dataCenter[k][j+index]='X'
 
 
     """calcul du score"""
@@ -157,13 +158,13 @@ def glouton_1(filename) :
  
 #tests
 solution_glouton, solution_score = glouton_1('test0.txt')
-   
+dc, pools, servers = read_perc('test0.txt', POURCENTAGE)
 #dc, pools, servers = read_perc('dc.in', POURCENTAGE)
-#displayInstance(dc, pools, servers)
+displayInstance(dc, pools, servers)
 #solution_glouton, solution_score = glouton_1('dc.in')
 #solution_glouton = glouton_1('dc.in')
-print solution_glouton
-print solution_score
+print (solution_glouton)
+print (solution_score)
 
-#displaySolution(solution_glouton, dc, servers)
+displaySolution(solution_glouton, dc, servers)
 #print("Score de cette solution :", solution_score)
