@@ -26,12 +26,15 @@ def read_perc(filename, perc):
     #la case correspondante au slot vaut '_' s'il est disponible, X sinon    
     dataCenter = [['_']*slots for i in range(nbRows)] 
 
+    #listes de slots disponibles    
+    availableSlots = [[i, j] for i in range(nbRows) for j in range(slots)]
+    
     #liste des slots indisponibles
     uaSlots = []   
     for i in range(unavailable):
         row, slot = [ int(x) for x in infile.readline().split() ]
         uaSlots.append([row, slot])
-        #print uaSlots[-1]
+        availableSlots.remove([row, slot])
     
     #mise a jour des slots indisponible dans dataCenter          
     for r, s in uaSlots:
@@ -51,7 +54,7 @@ def read_perc(filename, perc):
         pservers.append([i, size, cap])    
     
     infile.close()
-    return dataCenter, nbPools, pservers
+    return dataCenter, nbPools, pservers, availableSlots
     
 
 
@@ -83,10 +86,60 @@ def displaySolution(tab_solution, dataCenter, pservers):
         print(x)
     
 
+""" server = [numero, taille, capacite]
+renvoie l'ensemble Lm des slots a partir desquels le serveur peut etre localise """
+def possible_slots(dataCenter, server):
+    nbRows = len(dataCenter)
+    nbSlots = len(dataCenter[0])
+    size = server[1]    
+    Lm = []
+    
+    #pour chaque slot de chaque rangee
+    #on regarde si on peut placer le serveur de taille "size"
+    for row in range(nbRows):
+        for slot in range(nbSlots):
+            for s in range(size):
+                if slot+s+1 >= nbSlots or dataCenter[row][slot+s] == 'X':
+                    break
+            #s'il y a assez de place
+            if s == size - 1:
+                Lm.append([row, slot])
+    
+    return Lm
+
+#TEST de possible_slots
+#dc, pools, servers, availableSlots = read_perc('test0.txt', POURCENTAGE)
+#print possible_slots(dc, servers[0])
+
+
+""" slot = [row, slot]
+renvoie l'ensemble Krs des serveurs pouvant être localisé à ce slot"""
+def possible_servers(dataCenter, servers, slot):
+    row = dataCenter[slot[0]] #rangee entiere de ce slot
+    s = slot[1]
+    Krs = []
+    
+    dispo = 0
+    while s+dispo < len(row) and row[s+dispo] != 'X':
+        dispo+=1
+        
+    if dispo == 0:
+        return Krs
+        
+    for server in servers:
+        if server[1] <= dispo:
+            Krs.append(server)
+            
+    return Krs
+
+#TEST de possible_servers        
+dc, pools, servers, availableSlots = read_perc('test0.txt', POURCENTAGE)
+#print possible_servers(dc, servers, [1, 3])      
+print availableSlots
 
 def glouton_1(filename) :
       
-    dataCenter, pools, servers = read_perc(filename,POURCENTAGE)
+    dataCenter, pools, servers, availableSlots = read_perc(filename,POURCENTAGE)
     rows = len(dataCenter)
     slots = len(dataCenter[0])
     
@@ -155,16 +208,34 @@ def glouton_1(filename) :
     score = min(pools_score)
     return servers_alloc, score
 
+
+
+#def glouton_2(filename):
+#    
+#    dataCenter, pools, servers, availableSlots = read_perc(filename,POURCENTAGE)
+#    nbRows = len(dataCenter)
+#    nbSlots = len(dataCenter[0])    
+#    
+#    """allocation des serveurs"""
+#    #trier les serveurs par ordre décroissant de capacités
+#    servers.sort(key=lambda colonnes : colonnes[2], reverse=True )
+#    
+#    #creation d'un tableau de taille nbServers avec pour chaque case un petit tableau 
+#    #à 3 éléments [rangée, slot, pool] initialisé à x
+#    servers_alloc = [['x']*3 for i in range(len(servers))]    
+#    gr = 0 #pool
+#
+
  
 #tests
-solution_glouton, solution_score = glouton_1('test0.txt')
-dc, pools, servers = read_perc('test0.txt', POURCENTAGE)
-#dc, pools, servers = read_perc('dc.in', POURCENTAGE)
-displayInstance(dc, pools, servers)
+#solution_glouton, solution_score = glouton_1('test0.txt')
+#dc, pools, servers, availableSlots = read_perc('test0.txt', POURCENTAGE)
+#dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+#displayInstance(dc, pools, servers)
 #solution_glouton, solution_score = glouton_1('dc.in')
 #solution_glouton = glouton_1('dc.in')
-print (solution_glouton)
-print (solution_score)
+#print (solution_glouton)
+#print (solution_score)
 
-displaySolution(solution_glouton, dc, servers)
+#displaySolution(solution_glouton, dc, servers)
 #print("Score de cette solution :", solution_score)
