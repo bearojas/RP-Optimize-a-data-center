@@ -9,8 +9,9 @@ from copy import deepcopy
 
 POURCENTAGE = 100
 
-def glouton_1(dataCenter, pools, servers, availableSlots ) :
-
+def glouton_1(dc, pools, servers, availableSlots ) :
+    
+    dataCenter = deepcopy(dc)
     rows = len(dataCenter)
     slots = len(dataCenter[0])
     
@@ -64,11 +65,11 @@ def glouton_1(dataCenter, pools, servers, availableSlots ) :
 #dc, pools, servers, availableSlots = read_perc('test0.txt', POURCENTAGE)
 #solution_glouton, solution_score = glouton_1(dc, pools, servers, availableSlots )
 
-dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+#dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
 #displayInstance(dc, pools, servers)
-solution_glouton, solution_score = glouton_1(dc, pools, servers, availableSlots)
+#solution_glouton, solution_score = glouton_1(dc, pools, servers, availableSlots)
 #displaySolution(solution_glouton, dc, servers)
-print("Score de cette solution :", solution_score)
+#print("Score de cette solution :", solution_score)
 
 
 
@@ -118,7 +119,7 @@ def glouton_2(dataCenter, pools, servers, availableSlots ):
 #print solution_glouton
 #print solution_score
 
-dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
-solution_glouton1, solution_score1 = glouton_2(dc, pools, servers, availableSlots)
+#dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+#solution_glouton1, solution_score1 = glouton_2(dc, pools, servers, availableSlots)
 #displaySolution(solution_glouton, dc, servers)
-print("Score de cette solution :", solution_score1)
+#print("Score de cette solution :", solution_score1)

@@ -94,6 +94,7 @@ def possible_slots(dataCenter, server):
         for slot in range(nbSlots):
             for s in range(size):
                 if slot+s+1 >= nbSlots or dataCenter[row][slot+s] == 'X':
+                    s = -1
                     break
             #s'il y a assez de place
             if s == size - 1:

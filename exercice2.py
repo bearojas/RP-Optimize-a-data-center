@@ -6,10 +6,11 @@ Created on Fri Apr 14 12:34:31 2017
 """
 
 from toolsRP import *
+from exercice1 import *
 import random
 from copy import deepcopy
 
-POURCENTAGE = 100
+POURCENTAGE = 40
 """question 1"""
 
 
@@ -18,7 +19,7 @@ POURCENTAGE = 100
 def stochastique(filename, maxIter):
 
     dataCenter, pools, servers, availableSlots = read_perc(filename,POURCENTAGE)
-    solution_glouton, score_glouton = glouton_1(dataCenter, pools, servers, availableSlots )
+    solution_glouton, score_glouton = glouton_2(dataCenter, pools, servers, availableSlots )
     print("Score initial ", score_glouton)
     cpt = 0
     while cpt < maxIter:
@@ -34,13 +35,16 @@ def stochastique(filename, maxIter):
             
             #on enleve le serveur
             serversCopy = deepcopy(servers)
-            serversCopy.remove(removedServer)
-            solution_voisine, score_voisin = glouton_1(dataCenter, pools, serversCopy, availableSlots)
+            #serversCopy.remove(removedServer)
+            #on change la taille du serveur pour qu'il ne soit pas placé 
+            serversCopy[index][1] = len(dataCenter[0])+1
+            solution_voisine, score_voisin = glouton_2(dataCenter, pools, serversCopy, availableSlots)
             
             #si on a trouve une meilleure solution
             if score_voisin > score_glouton:
                 print("Meilleur score", score_voisin)
                 solution_glouton, score_glouton = solution_voisine, score_voisin
+                servers = serversCopy
                 cpt = 0
             
         #voisinage : placer un serveur non affecte    
@@ -55,22 +59,23 @@ def stochastique(filename, maxIter):
             
             #tirage aleatoire de l'emplacement libre
             appliantSlots = possible_slots(dataCenter, chosenOne)
-            print("Appliants  ", appliantSlots)
             indexSlot = random.randint(0, len(appliantSlots)-1)
             slot = appliantSlots[indexSlot]
             
             #on enleve le serveur
             serversCopy = deepcopy(servers)
-            serversCopy.remove(chosenOne)
+            #serversCopy.remove(chosenOne)
+            #on change la taille du serveur pour qu'il ne soit pas placé 
+            serversCopy[index][1] = len(dataCenter[0])+1
             
             centerCopy = deepcopy(dataCenter)
             #mise a jour de dataCenter
             for i in range(chosenOne[1]):
                 centerCopy[slot[0]][slot[1]+i] = 'X'
             
-            solution_voisine, score_voisin = glouton_1(centerCopy, pools, serversCopy, availableSlots)
+            solution_voisine, score_voisin = glouton_2(centerCopy, pools, serversCopy, availableSlots)
             
-            solution_voisine.insert(chosenOne[0], [slot[0], slot[1], pool])
+            solution_voisine[chosenOne[0]] = [slot[0], slot[1], pool]
             score_voisin = calculScore(solution_voisine, servers, pools, len(dataCenter))
             
             #si on a trouve une meilleure solution
