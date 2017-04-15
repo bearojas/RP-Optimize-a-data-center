@@ -133,6 +133,28 @@ def possible_servers(dataCenter, servers, slot):
 #print (possible_servers(dc, servers, [1, 3]))      
 #print (availableSlots)
 
+
+""" retourne l'ensemble des slots indisponibles """
+def getUaSlots(filename) :
+    
+    infile = open ( filename, "r" )    
+    #lecture du nombre de rangees, slots par rangee, slots indisponibles, pools et servers
+    rows, slots, unavailable, pools, servers = [ int(x) for x in infile.readline().split()] 
+    uaSlots = []
+    for i in range(unavailable):
+        row, slot = [int(x) for x in infile.readline().split()]
+        if (row < rows) :
+            uaSlots.append([row,slot])
+            
+    infile.close()
+    return uaSlots
+    
+
+#TEST de getUaSlots
+#test = getUaSlots('dc.in')
+#print(test)
+
+
 """calcul du score"""
 def calculScore(servers_alloc, servers, pools, rows):
     
