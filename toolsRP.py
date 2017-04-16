@@ -69,7 +69,7 @@ def displayInstance (dataCenter, pools, servers) :
 def displaySolution(tab_solution, dataCenter, pservers):
     print("************SOLUTION***************")
     for i in range(len(tab_solution)):
-        if tab_solution[i][0] != 'X' :
+        if tab_solution[i][0] != 'x' :
             row = int(tab_solution[i][0])
             slot = int(tab_solution[i][1])
             pool = tab_solution[i][2]
@@ -93,7 +93,7 @@ def possible_slots(dataCenter, server):
     for row in range(nbRows):
         for slot in range(nbSlots):
             for s in range(size):
-                if slot+s+1 >= nbSlots or dataCenter[row][slot+s] == 'X':
+                if slot+s >= nbSlots or dataCenter[row][slot+s] == 'X':
                     s = -1
                     break
             #s'il y a assez de place

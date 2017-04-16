@@ -69,6 +69,15 @@ def uniqueServeurParSlotContrainte(servers, R, S, P) :
                 m.addConstr( quicksum(serv.Zrsi[(r,s,p)] for serv in servers if [r,s] in serv.Lm) <= 1, "Contrainte_%d_%d_%d" %(r,s,p))
 
 
+
+# un serveur ne peut pas avoir comme slot initial un slot occupé par un autre serveur
+def aucunServeurSurSlotOccupeContrainte(servers, P) :
+
+    for serv in servers :
+        for (r,s,i) in serv.Zrsi :
+            m.addConstr(serv.Zrsi[(r,s,i)] + quicksum(otherServ.Zrsi[(r,s+k,p)] for otherServ in servers if otherServ != serv for k in range(serv.size) for p in range(P) if(r,s+k,p) in otherServ.Zrsi) <=1, "Contrainte_k_%d_%d_%d_%d" %(serv.numero,r,s,i))
+
+
  
 # variable t (minimum pour un groupe) 
 # sous contrainte : t <= à chaque min de somme des rangées minus une
@@ -96,8 +105,6 @@ def createServersAlloc(servers) :
     servers_alloc = [['x']*3 for i in range(len(servers))]
 
     for serv in servers :
-        print(serv.numero)
-        print(serv.size)
         for (r,s,i) in serv.Zrsi :
             if serv.Zrsi[(r,s,i)].x == 1 :
                 servers_alloc[serv.numero] = [r,s,i]
@@ -125,9 +132,7 @@ def bestAffectation(filename) :
     l_servers = initServers(M, dataCenter)
     # on peut faire un liste de t : variable pour chaque groupe
     t = initVariables(l_servers, R, S, P)
-    for serv in l_servers:
-        print(serv.numero)
-        print(serv.Zrsi)
+
     m.update()
 
     """fonction objective"""
@@ -139,16 +144,19 @@ def bestAffectation(filename) :
     """contraintes"""
     uniqueAffectationContrainte(l_servers)
     uniqueServeurParSlotContrainte(l_servers, R, S, P) 
+    aucunServeurSurSlotOccupeContrainte(l_servers,P)
     tInferieurAuMinSommeRangeesContrainte(l_servers, t, R)
     xInferieurAuMinPoolsContrainte(x ,t)    
     
     m.optimize()
     
-    #servers_alloc = createServersAlloc(l_servers);    
+    servers_alloc = createServersAlloc(l_servers);   
 
-    #displaySolution(servers_alloc, dataCenter, M)
-    print("Valeur de la fonction obj :", m.objVal)
+    displaySolution(servers_alloc, dataCenter, M)
+    print("Valeur de la solution :", m.objVal)
  
+    
+    
     
 m = Model("mogplex")
 bestAffectation('test0.txt')
