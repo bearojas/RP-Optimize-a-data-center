@@ -30,59 +30,37 @@ def stochastique(filename, maxIter):
         if alea < 0.3:
             print("A")
             #tirage aleatoire du serveur a enlever
-            index = random.randint(0,len(servers)-1)
-            removedServer = servers[index]
-            
+            index = random.randint(0, len(servers)-1)
+            while solution_glouton[index] == ['x','x','x']:
+                    index = random.randint(0,len(servers)-1)
+
+            solution_voisine = deepcopy(solution_glouton)
             #on enleve le serveur
-            serversCopy = deepcopy(servers)
-            #serversCopy.remove(removedServer)
-            #on change la taille du serveur pour qu'il ne soit pas placé 
-            serversCopy[index][1] = len(dataCenter[0])+1
-            solution_voisine, score_voisin = glouton_2(dataCenter, pools, serversCopy, availableSlots)
+            solution_voisine[index] = ['x','x','x']
+            score_voisin = calculScore(solution_voisine, servers, pools, len(dataCenter))
             
-            #si on a trouve une meilleure solution
-            if score_voisin > score_glouton:
-                print("Meilleur score", score_voisin)
-                solution_glouton, score_glouton = solution_voisine, score_voisin
-                servers = serversCopy
-                cpt = 0
             
         #voisinage : placer un serveur non affecte    
         elif alea < 0.6:
             print("B")
             #tirage aleatoire du serveur a affecte
-            index = random.randint(0,len(servers)-1)
-            chosenOne = servers[index]
-            
+            index = random.randint(0, len(servers)-1)
+            while solution_glouton[index] != ['x','x','x']:
+                    index = random.randint(0,len(servers)-1)
+                    
             #tirage alea d'un pool
             pool = random.randint(0, pools-1)
             
             #tirage aleatoire de l'emplacement libre
-            appliantSlots = possible_slots(dataCenter, chosenOne)
-            indexSlot = random.randint(0, len(appliantSlots)-1)
-            slot = appliantSlots[indexSlot]
+            appliantSlots = possible_slots(dataCenter, servers[index])
             
-            #on enleve le serveur
-            serversCopy = deepcopy(servers)
-            #serversCopy.remove(chosenOne)
-            #on change la taille du serveur pour qu'il ne soit pas placé 
-            serversCopy[index][1] = len(dataCenter[0])+1
-            
-            centerCopy = deepcopy(dataCenter)
-            #mise a jour de dataCenter
-            for i in range(chosenOne[1]):
-                centerCopy[slot[0]][slot[1]+i] = 'X'
-            
-            solution_voisine, score_voisin = glouton_2(centerCopy, pools, serversCopy, availableSlots)
-            
-            solution_voisine[chosenOne[0]] = [slot[0], slot[1], pool]
-            score_voisin = calculScore(solution_voisine, servers, pools, len(dataCenter))
-            
-            #si on a trouve une meilleure solution
-            if score_voisin > score_glouton:
-                print("Meilleur score", score_voisin)
-                solution_glouton, score_glouton = solution_voisine, score_voisin
-                cpt = 0            
+            if len(appliantSlots) != 0:
+                indexSlot = random.randint(0, len(appliantSlots)-1)
+                slot = appliantSlots[indexSlot]
+                
+                solution_voisine = deepcopy(solution_glouton)
+                solution_voisine[index] = [slot[0], slot[1], pool]
+                score_voisin = calculScore(solution_voisine, servers, pools, len(dataCenter))            
             
         #voisinage : changer le pool d'un serveur deja affecte
         else:
@@ -106,17 +84,18 @@ def stochastique(filename, maxIter):
             
             score_voisin = calculScore(solution_voisine, servers, pools, len(dataCenter))
 
-            #si on a trouve une meilleure solution
-            if score_voisin > score_glouton:
-                print("Meilleur score", score_voisin)
-                solution_glouton, score_glouton = solution_voisine, score_voisin
-                cpt = 0
+        #si on a trouve une meilleure solution
+        if score_voisin > score_glouton:
+            print("Meilleur score", score_voisin)
+            solution_glouton, score_glouton = solution_voisine, score_voisin
+            cpt = 0
         
     return solution_glouton, score_glouton 
         
-        
-solution_glouton, score_glouton = stochastique('dc.in', 20)       
-print(score_glouton)        
+dataCenter, pools, servers, availableSlots = read_perc('dc.in',POURCENTAGE)        
+solution_glouton, score_glouton = stochastique('dc.in', 30)       
+print(score_glouton)  
+#print displaySolution(solution_glouton, dataCenter, servers)     
 
 
 

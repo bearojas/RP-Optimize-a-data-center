@@ -11,13 +11,13 @@ def read_perc(filename, perc):
     
     infile = open ( filename, "r" )    
     #lecture du nombre de rangees, slots par rangee, slots indisponibles, pools et servers
-    rows, slots, unavailable, pools, servers = [ int(x) for x in infile.readline().split()] 
-    #print rows, slots, unavailable, pools, servers 
+    rows, slots, unavailable, pools, servers = \
+    [ int(x) for x in infile.readline().split()] 
         
     #nombre de rangees a conserver
     nbRows = int(perc*rows/100.)
     
-    #nombre de pools
+    #nombre de pools a conserver 
     nbPools = int(perc*pools/100.)
     
     #on cree une instance de data center 
@@ -35,7 +35,6 @@ def read_perc(filename, perc):
         if row < nbRows:
             availableSlots.remove([row, slot])
             dataCenter[row][slot] = 'X'
-        
 
     #nombre de serveurs a allouer
     s = int(perc*servers/100.)
