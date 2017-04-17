@@ -49,8 +49,20 @@ def read_perc(filename, perc):
     infile.close()
     return dataCenter, nbPools, pservers, availableSlots
     
-
-
+#sauvegarde de l'instance
+def saveSolution(filename, tab_solution):
+    solution = open(filename[:-4]+"_sol.txt","w")
+    for i in range(len(tab_solution)):
+        if tab_solution[i][0] != 'x' :
+            row = str(tab_solution[i][0])
+            slot = str(tab_solution[i][1])
+            pool = str(tab_solution[i][2])
+            solution.write(row+" "+slot+" "+pool+"\r\n")
+        else:
+            solution.write("x \r\n")
+    solution.close()
+    
+    
 #affichage de l'instance du problème
 def displayInstance (dataCenter, pools, servers) :
     print ("Pourcentage à lire : ", POURCENTAGE)  
@@ -131,27 +143,6 @@ def possible_servers(dataCenter, servers, slot):
 #dc, pools, servers, availableSlots = read_perc('test0.txt', POURCENTAGE)
 #print (possible_servers(dc, servers, [1, 3]))      
 #print (availableSlots)
-
-
-""" retourne l'ensemble des slots indisponibles """
-def getUaSlots(filename) :
-    
-    infile = open ( filename, "r" )    
-    #lecture du nombre de rangees, slots par rangee, slots indisponibles, pools et servers
-    rows, slots, unavailable, pools, servers = [ int(x) for x in infile.readline().split()] 
-    uaSlots = []
-    for i in range(unavailable):
-        row, slot = [int(x) for x in infile.readline().split()]
-        if (row < rows) :
-            uaSlots.append([row,slot])
-            
-    infile.close()
-    return uaSlots
-    
-
-#TEST de getUaSlots
-#test = getUaSlots('dc.in')
-#print(test)
 
 
 """calcul du score"""

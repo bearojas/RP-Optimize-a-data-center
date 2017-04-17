@@ -9,13 +9,46 @@ from copy import deepcopy
 
 POURCENTAGE = 100
 
+
+def new_glouton_1(dc, pools, servers, availableSlots ) :    
+    dataCenter = deepcopy(dc)
+    
+    #trier les serveurs par ordre décroissant de capacités
+    servers.sort(key=lambda colonnes : colonnes[2], reverse=True )
+    
+    #tableau contenant pour chaque serveur une liste [rangée, slot, pool]
+    #initialisé à 'x x x'
+    affectation = [['x']*3 for i in range(len(servers))]    
+    gr = 0 #pool
+    
+    #pour chaque serveur
+    for server in servers:
+        numServ = server[0] # id du serveur
+        nbSlot = server[1] # nombre de slots nécessaires
+        
+        #ensemble des slots à partir desquels le serveur peut être localisé
+        appliantSlots = possible_slots(dataCenter, server)
+        
+        if len(appliantSlots) != 0:
+            #on chosit le premier slot disponible
+            chosenOne = appliantSlots[0]
+            
+            affectation[numServ] = [chosenOne[0], chosenOne[1], gr]
+            gr = (gr+1)%pools
+            
+            #mise a jour des slots disponibles dans dataCenter
+            for index in range(nbSlot) :
+                dataCenter[chosenOne[0]][chosenOne[1]+index]='X'
+
+    score = calculScore(affectation, servers, pools, len(dataCenter))
+    return affectation, score
+
+
 def glouton_1(dc, pools, servers, availableSlots ) :
     
     dataCenter = deepcopy(dc)
     rows = len(dataCenter)
     slots = len(dataCenter[0])
-    
-    #allocation des serveurs
     
     #trier les serveurs par ordre décroissant de capacités
     servers.sort(key=lambda colonnes : colonnes[2], reverse=True )
@@ -64,6 +97,8 @@ def glouton_1(dc, pools, servers, availableSlots ) :
 #tests glouton 1
 #dc, pools, servers, availableSlots = read_perc('test0.txt', POURCENTAGE)
 #solution_glouton, solution_score = glouton_1(dc, pools, servers, availableSlots )
+#displaySolution(solution_glouton, dc, servers)
+#saveSolution('test0.txt', solution_glouton)
 
 #dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
 #displayInstance(dc, pools, servers)
@@ -74,21 +109,23 @@ def glouton_1(dc, pools, servers, availableSlots ) :
 
 
 def glouton_2(dataCenter, pools, servers, availableSlots ):
-    
-    """allocation des serveurs"""
-    #trier les serveurs par ordre décroissant de taille puis de capacités
     serversCopy = deepcopy(servers)
-    serversCopy.sort(key=lambda colonnes : (colonnes[1], colonnes[2]), reverse=True )
     
-    #creation d'un tableau de taille nbServers avec pour chaque case un petit tableau 
-    #à 3 éléments [rangée, slot, pool] initialisé à x
+    #trier les serveurs par ordre décroissant de taille puis de capacités   
+    #serversCopy.sort(key=lambda colonnes : (colonnes[1], colonnes[2]), reverse=True )
+    #trier les serveurs par ordre décroissant de capacites et ordre croissant de taille  
+    serversCopy.sort(key=lambda colonnes : (colonnes[2], -colonnes[1]), reverse=True )
+    
+    #tableau contenant pour chaque serveur une liste [rangée, slot, pool]
+    #initialisé à 'x x x'
     servers_alloc = [['x']*3 for i in range(len(serversCopy))]    
     gr = 0 #pool
     
     #parcours de tous les slots disponibles
     while len(availableSlots) != 0:
         slot = availableSlots[0]
-        #ensemble des serveurs non alloues possibles pour ce slot, tries par ordre decroissant de taille et capacite
+        #ensemble des serveurs non alloues possibles pour ce slot
+        #tries par ordre decroissant de taille et capacite
         appliantServers = possible_servers(dataCenter, serversCopy, slot)
         
         if len(appliantServers) != 0:
@@ -109,7 +146,6 @@ def glouton_2(dataCenter, pools, servers, availableSlots ):
         else:
             availableSlots.remove(slot)
     
-            
     return servers_alloc, calculScore(servers_alloc, servers, pools, len(dataCenter))
 
 
@@ -118,8 +154,9 @@ def glouton_2(dataCenter, pools, servers, availableSlots ):
 #solution_glouton, solution_score = glouton_2(dc, pools, servers, availableSlots)
 #print solution_glouton
 #print solution_score
+#saveSolution('test0.txt', solution_glouton)
 
-#dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
-#solution_glouton1, solution_score1 = glouton_2(dc, pools, servers, availableSlots)
+dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+solution_glouton1, solution_score1 = glouton_2(dc, pools, servers, availableSlots)
 #displaySolution(solution_glouton, dc, servers)
-#print("Score de cette solution :", solution_score1)
+print("Score de cette solution :", solution_score1)
