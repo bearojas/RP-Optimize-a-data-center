@@ -7,12 +7,12 @@ Created on Fri Apr 14 12:27:59 2017
 from toolsRP import *
 from copy import deepcopy
 
-POURCENTAGE = 20
+POURCENTAGE =100
 
 
-def new_glouton_1(dc, pools, servers, availableSlots ) :    
+def new_glouton_1(dc, pools, serv, availableSlots ) :    
     dataCenter = deepcopy(dc)
-    
+    servers = deepcopy(serv)
     #trier les serveurs par ordre décroissant de capacités
     servers.sort(key=lambda colonnes : colonnes[2], reverse=True )
     
@@ -27,6 +27,7 @@ def new_glouton_1(dc, pools, servers, availableSlots ) :
         nbSlot = server[1] # nombre de slots nécessaires
         
         #ensemble des slots à partir desquels le serveur peut être localisé
+        # 1 = on ne retourne que le premier slot
         appliantSlot = possible_slots(dataCenter, server, 1)
         
         if len(appliantSlot) != 0:
@@ -44,12 +45,12 @@ def new_glouton_1(dc, pools, servers, availableSlots ) :
     return affectation, score
 
 
-def glouton_1(dc, pools, servers, availableSlots ) :
+def glouton_1(dc, pools, serv, availableSlots ) :
     
     dataCenter = deepcopy(dc)
     rows = len(dataCenter)
     slots = len(dataCenter[0])
-    
+    servers = deepcopy(serv)
     #trier les serveurs par ordre décroissant de capacités
     servers.sort(key=lambda colonnes : colonnes[2], reverse=True )
     
@@ -100,11 +101,11 @@ def glouton_1(dc, pools, servers, availableSlots ) :
 #displaySolution(solution_glouton, dc, servers)
 #saveSolution('test0.txt', solution_glouton)
 
-#dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
-#displayInstance(dc, pools, servers)
-#solution_glouton, solution_score = glouton_1(dc, pools, servers, availableSlots)
-#displaySolution(solution_glouton, dc, servers)
-#print("Score de cette solution :", solution_score)
+dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+displayInstance(dc, pools, servers)
+solution_glouton, solution_score = glouton_1(dc, pools, servers, availableSlots)
+displaySolution(solution_glouton, dc, servers)
+print("Score de cette solution :", solution_score)
 
 
 
@@ -165,4 +166,4 @@ dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
 solution_glouton1, solution_score1, center = glouton_2(dc, pools, servers, availableSlots)
 displaySolution(solution_glouton1, dc, servers)
 print("Score de cette solution :", solution_score1)
-displayInstance(center, pools, servers)
+#displayInstance(center, pools, servers)

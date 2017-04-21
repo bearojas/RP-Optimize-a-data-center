@@ -106,9 +106,9 @@ def stochastique(filename, maxIter):
     return solution_glouton, score_glouton 
         
 dataCenter, pools, servers, availableSlots = read_perc('dc.in',POURCENTAGE)        
-solution_glouton, score_glouton = stochastique('dc.in', 100)       
+solution_glouton, score_glouton = stochastique('dc.in', 200)       
 print(score_glouton)  
-#print displaySolution(solution_glouton, dataCenter, servers)     
+print (displaySolution(solution_glouton, dataCenter, servers)) 
 
 
 
