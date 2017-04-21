@@ -93,7 +93,7 @@ def displaySolution(tab_solution, dataCenter, pservers):
 
 """ server = [numero, taille, capacite]
 renvoie l'ensemble Lm des slots a partir desquels le serveur peut etre localise """
-def possible_slots(dataCenter, server):
+def possible_slots(dataCenter, server, first = 0):
     nbRows = len(dataCenter)
     nbSlots = len(dataCenter[0])
     size = server[1]    
@@ -110,6 +110,8 @@ def possible_slots(dataCenter, server):
             #s'il y a assez de place
             if s == size - 1:
                 Lm.append([row, slot])
+                if(first):
+                    return Lm
     
     return Lm
 
@@ -121,7 +123,7 @@ def possible_slots(dataCenter, server):
 """ un server = [numero, taille, capacite]
 slot = [row, slot]
 renvoie l'ensemble Krs des serveurs pouvant être localisé à ce slot"""
-def possible_servers(dataCenter, servers, slot):
+def possible_servers(dataCenter, servers, slot, first = 0):
     row = dataCenter[slot[0]] #rangee entiere de ce slot
     s = slot[1]
     Krs = []
@@ -136,7 +138,8 @@ def possible_servers(dataCenter, servers, slot):
     for server in servers:
         if server[1] <= dispo:
             Krs.append(server)
-            
+            if(first):
+                return Krs
     return Krs
 
 #TEST de possible_servers        

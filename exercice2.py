@@ -10,7 +10,7 @@ from exercice1 import *
 import random
 from copy import deepcopy
 
-POURCENTAGE = 40
+POURCENTAGE = 100
 """question 1"""
 
 
@@ -19,8 +19,10 @@ POURCENTAGE = 40
 def stochastique(filename, maxIter):
 
     dataCenter, pools, servers, availableSlots = read_perc(filename,POURCENTAGE)
-    solution_glouton, score_glouton = glouton_2(dataCenter, pools, servers, availableSlots )
+    solution_glouton, score_glouton, updatedCenter = glouton_2(dataCenter, pools, servers, availableSlots )
     print("Score initial ", score_glouton)
+    solution = []    
+    score_voisin = 0
     cpt = 0
     while cpt < maxIter:
         cpt+=1
@@ -35,8 +37,13 @@ def stochastique(filename, maxIter):
                     index = random.randint(0,len(servers)-1)
 
             solution_voisine = deepcopy(solution_glouton)
+            
             #on enleve le serveur
+            r, s = solution_voisine[index][0], solution_voisine[index][1]
             solution_voisine[index] = ['x','x','x']
+            for i in range(servers[index][1]):
+                updatedCenter[r][s+i] = '_'
+                
             score_voisin = calculScore(solution_voisine, servers, pools, len(dataCenter))
             
             
@@ -52,11 +59,14 @@ def stochastique(filename, maxIter):
             pool = random.randint(0, pools-1)
             
             #tirage aleatoire de l'emplacement libre
-            appliantSlots = possible_slots(dataCenter, servers[index])
+            appliantSlots = possible_slots(updatedCenter, servers[index])
             
             if len(appliantSlots) != 0:
                 indexSlot = random.randint(0, len(appliantSlots)-1)
                 slot = appliantSlots[indexSlot]
+                
+                for i in range(servers[index][1]):
+                    updatedCenter[slot[0]][slot[1]] = 'X'
                 
                 solution_voisine = deepcopy(solution_glouton)
                 solution_voisine[index] = [slot[0], slot[1], pool]
@@ -89,11 +99,14 @@ def stochastique(filename, maxIter):
             print("Meilleur score", score_voisin)
             solution_glouton, score_glouton = solution_voisine, score_voisin
             cpt = 0
+        elif score_voisin == score_glouton:
+            print("Meilleur score", score_voisin)
+            solution_glouton, score_glouton = solution_voisine, score_voisin           
         
     return solution_glouton, score_glouton 
         
 dataCenter, pools, servers, availableSlots = read_perc('dc.in',POURCENTAGE)        
-solution_glouton, score_glouton = stochastique('dc.in', 30)       
+solution_glouton, score_glouton = stochastique('dc.in', 100)       
 print(score_glouton)  
 #print displaySolution(solution_glouton, dataCenter, servers)     
 

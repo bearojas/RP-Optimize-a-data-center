@@ -4,11 +4,11 @@ Created on Sat Apr 15 18:10:54 2017
 
 @author: clair
 """
-
+#!/usr/bin/python
 from toolsRP import *
 from gurobipy import * 
 
-POURCENTAGE = 100
+POURCENTAGE = 20
 
 class Server :
     
@@ -46,7 +46,7 @@ def initVariables(servers, rows, slots, pools) :
     # variables pour le minimum de chaque groupe
     t = []
     for i in range(pools) :
-        t.append(m.addVar(vtype=GRB.CONTINUOUS, lb=0, name="t%d" %i))
+        t.append(m.addVar(vtype=GRB.INTEGER, lb=0, name="t%d" %i))
     
     return t
 
@@ -124,11 +124,9 @@ def bestAffectation(filename) :
     R = len(dataCenter)
     # S = nombre de slots par rangée
     S = len(dataCenter[0])
-    # U = slots indisponibles
-    U = getUaSlots(filename)
     
     """variables"""
-    x = m.addVar(vtype=GRB.CONTINUOUS, lb=0, name ="x")
+    x = m.addVar(vtype=GRB.INTEGER, lb=0, name ="x")
     l_servers = initServers(M, dataCenter)
     # on peut faire un liste de t : variable pour chaque groupe
     t = initVariables(l_servers, R, S, P)
@@ -148,6 +146,8 @@ def bestAffectation(filename) :
     tInferieurAuMinSommeRangeesContrainte(l_servers, t, R)
     xInferieurAuMinPoolsContrainte(x ,t)    
     
+    #timeout de 5 min
+    m.setParam('TimeLimit',5*60)
     m.optimize()
     
     servers_alloc = createServersAlloc(l_servers);   
@@ -159,4 +159,4 @@ def bestAffectation(filename) :
     
     
 m = Model("mogplex")
-bestAffectation('test0.txt')
+bestAffectation('dc.in')

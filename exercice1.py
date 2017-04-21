@@ -7,7 +7,7 @@ Created on Fri Apr 14 12:27:59 2017
 from toolsRP import *
 from copy import deepcopy
 
-POURCENTAGE = 100
+POURCENTAGE = 20
 
 
 def new_glouton_1(dc, pools, servers, availableSlots ) :    
@@ -27,11 +27,11 @@ def new_glouton_1(dc, pools, servers, availableSlots ) :
         nbSlot = server[1] # nombre de slots nécessaires
         
         #ensemble des slots à partir desquels le serveur peut être localisé
-        appliantSlots = possible_slots(dataCenter, server)
+        appliantSlot = possible_slots(dataCenter, server, 1)
         
-        if len(appliantSlots) != 0:
+        if len(appliantSlot) != 0:
             #on chosit le premier slot disponible
-            chosenOne = appliantSlots[0]
+            chosenOne = appliantSlot[0]
             
             affectation[numServ] = [chosenOne[0], chosenOne[1], gr]
             gr = (gr+1)%pools
@@ -110,6 +110,7 @@ def glouton_1(dc, pools, servers, availableSlots ) :
 
 def glouton_2(dataCenter, pools, servers, availableSlots ):
     serversCopy = deepcopy(servers)
+    centerCopy = deepcopy(dataCenter)
     
     #trier les serveurs par ordre décroissant de taille puis de capacités   
     #serversCopy.sort(key=lambda colonnes : (colonnes[1], colonnes[2]), reverse=True )
@@ -126,13 +127,17 @@ def glouton_2(dataCenter, pools, servers, availableSlots ):
         slot = availableSlots[0]
         #ensemble des serveurs non alloues possibles pour ce slot
         #tries par ordre decroissant de taille et capacite
-        appliantServers = possible_servers(dataCenter, serversCopy, slot)
+        appliantServer = possible_servers(dataCenter, serversCopy, slot, 1)
         
-        if len(appliantServers) != 0:
-            #on choisit celui qui occupe plus de slots et a la meilleure capacite
-            chosenOne = appliantServers[0]
+        if len(appliantServer) != 0:
+            #on choisit celui qui occupe moins de slots et a la meilleure capacite
+            chosenOne = appliantServer[0]
             #le serveur est deja alloue
             serversCopy.remove(chosenOne)
+            
+            #mise a jour des slots disponibles dans dataCenter
+            for index in range(chosenOne[1]) :
+                centerCopy[slot[0]][slot[1]+index]='X'
             
             #mise a jour des slots disponibles
             size = chosenOne[1]
@@ -146,17 +151,18 @@ def glouton_2(dataCenter, pools, servers, availableSlots ):
         else:
             availableSlots.remove(slot)
     
-    return servers_alloc, calculScore(servers_alloc, servers, pools, len(dataCenter))
+    return servers_alloc, calculScore(servers_alloc, servers, pools, len(dataCenter)), centerCopy
 
 
 #tests glouton_2
 #dc, pools, servers, availableSlots = read_perc('test0.txt', POURCENTAGE)
-#solution_glouton, solution_score = glouton_2(dc, pools, servers, availableSlots)
+#solution_glouton, solution_score, center = glouton_2(dc, pools, servers, availableSlots)
 #print solution_glouton
 #print solution_score
 #saveSolution('test0.txt', solution_glouton)
-
+#
 dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
-solution_glouton1, solution_score1 = glouton_2(dc, pools, servers, availableSlots)
-#displaySolution(solution_glouton, dc, servers)
+solution_glouton1, solution_score1, center = glouton_2(dc, pools, servers, availableSlots)
+displaySolution(solution_glouton1, dc, servers)
 print("Score de cette solution :", solution_score1)
+displayInstance(center, pools, servers)
