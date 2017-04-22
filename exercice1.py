@@ -101,11 +101,11 @@ def glouton_1(dc, pools, serv, availableSlots ) :
 #displaySolution(solution_glouton, dc, servers)
 #saveSolution('test0.txt', solution_glouton)
 
-dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
-displayInstance(dc, pools, servers)
-solution_glouton, solution_score = glouton_1(dc, pools, servers, availableSlots)
-displaySolution(solution_glouton, dc, servers)
-print("Score de cette solution :", solution_score)
+#dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+#displayInstance(dc, pools, servers)
+#solution_glouton, solution_score = glouton_1(dc, pools, servers, availableSlots)
+#displaySolution(solution_glouton, dc, servers)
+#print("Score de cette solution :", solution_score)
 
 
 
@@ -162,8 +162,8 @@ def glouton_2(dataCenter, pools, servers, availableSlots ):
 #print solution_score
 #saveSolution('test0.txt', solution_glouton)
 #
-dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
-solution_glouton1, solution_score1, center = glouton_2(dc, pools, servers, availableSlots)
-displaySolution(solution_glouton1, dc, servers)
-print("Score de cette solution :", solution_score1)
+#dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+#solution_glouton1, solution_score1, center = glouton_2(dc, pools, servers, availableSlots)
+#displaySolution(solution_glouton1, dc, servers)
+#print("Score de cette solution :", solution_score1)
 #displayInstance(center, pools, servers)

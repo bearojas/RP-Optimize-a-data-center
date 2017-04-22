@@ -172,5 +172,14 @@ def calculScore(servers_alloc, servers, pools, rows):
         
     return min(pools_score)
     
+
+# retourne les numeros des serveurs inutilises
+def getUnusedServers(servers_alloc) :
+    
+    un_servers =[]
+    for i in range(len(servers_alloc)) :
+        if servers_alloc[i][0]=='x':
+            un_servers.append(i)
+    return un_servers
     
 

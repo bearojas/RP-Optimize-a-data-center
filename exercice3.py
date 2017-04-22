@@ -65,8 +65,7 @@ def uniqueServeurParSlotContrainte(servers, R, S, P) :
     
     for r in range(R):
         for s in range(S) :
-            for p in range(P) :
-                m.addConstr( quicksum(serv.Zrsi[(r,s,p)] for serv in servers if [r,s] in serv.Lm) <= 1, "Contrainte_%d_%d_%d" %(r,s,p))
+            m.addConstr( quicksum(serv.Zrsi[(r,s,p)] for serv in servers if [r,s] in serv.Lm for p in range(P)) <= 1, "Contrainte_%d_%d" %(r,s))
 
 
 
