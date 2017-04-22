@@ -112,9 +112,7 @@ def glouton_1(dc, pools, serv, availableSlots ) :
 def glouton_2(dataCenter, pools, servers, availableSlots ):
     serversCopy = deepcopy(servers)
     centerCopy = deepcopy(dataCenter)
-    
-    #trier les serveurs par ordre décroissant de taille puis de capacités   
-    #serversCopy.sort(key=lambda colonnes : (colonnes[1], colonnes[2]), reverse=True )
+
     #trier les serveurs par ordre décroissant de capacites et ordre croissant de taille  
     serversCopy.sort(key=lambda colonnes : (colonnes[2], -colonnes[1]), reverse=True )
     
@@ -126,24 +124,20 @@ def glouton_2(dataCenter, pools, servers, availableSlots ):
     #parcours de tous les slots disponibles
     while len(availableSlots) != 0:
         slot = availableSlots[0]
-        #ensemble des serveurs non alloues possibles pour ce slot
-        #tries par ordre decroissant de taille et capacite
+        #premier serveur de la liste triee de serveurs non alloues possibles pour ce slot
         appliantServer = possible_servers(dataCenter, serversCopy, slot, 1)
         
         if len(appliantServer) != 0:
-            #on choisit celui qui occupe moins de slots et a la meilleure capacite
+            #serveur qui occupe moins de slots et a la meilleure capacite
             chosenOne = appliantServer[0]
             #le serveur est deja alloue
             serversCopy.remove(chosenOne)
             
-            #mise a jour des slots disponibles dans dataCenter
-            for index in range(chosenOne[1]) :
-                centerCopy[slot[0]][slot[1]+index]='X'
-            
             #mise a jour des slots disponibles
             size = chosenOne[1]
-            for i in range(size):
-                availableSlots.remove([slot[0], slot[1]+i])
+            for index in range(size):
+                availableSlots.remove([slot[0], slot[1]+index])
+                centerCopy[slot[0]][slot[1]+index]='X'
             
             #allocation du serveur
             servers_alloc[chosenOne[0]] = [slot[0], slot[1], gr]

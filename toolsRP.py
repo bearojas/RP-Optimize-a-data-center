@@ -51,7 +51,7 @@ def read_perc(filename, perc):
     
 #sauvegarde de l'instance
 def saveSolution(filename, tab_solution):
-    solution = open(filename[:-4]+"_sol.txt","w")
+    solution = open(filename+".txt","w")
     for i in range(len(tab_solution)):
         if tab_solution[i][0] != 'x' :
             row = str(tab_solution[i][0])
