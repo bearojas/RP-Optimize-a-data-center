@@ -102,13 +102,13 @@ def glouton_1(dc, pools, serv, availableSlots ) :
 #displaySolution(solution_glouton, dc, servers)
 #saveSolution('test0.txt', solution_glouton)
 
-dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+#dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
 #displayInstance(dc, pools, servers)
-start = tps.clock()
-solution_glouton, solution_score = new_glouton_1(dc, pools, servers, availableSlots)
-print("TEMPS ",tps.clock()-start)
-displaySolution(solution_glouton, dc, servers)
-print("Score de cette solution :", solution_score)
+#start = tps.clock()
+#solution_glouton, solution_score = new_glouton_1(dc, pools, servers, availableSlots)
+#print("TEMPS ",tps.clock()-start)
+#displaySolution(solution_glouton, dc, servers)
+#print("Score de cette solution :", solution_score)
 
 
 
@@ -158,7 +158,7 @@ def glouton_2(dataCenter, pools, servers, availableSlots ):
 #print solution_glouton
 #print solution_score
 #saveSolution('test0.txt', solution_glouton)
-#
+
 #dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
 #start = tps.clock()
 #solution_glouton1, solution_score1, center = glouton_2(dc, pools, servers, availableSlots)
