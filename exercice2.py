@@ -9,6 +9,7 @@ from toolsRP import *
 from exercice1 import *
 import random
 from copy import deepcopy
+import time as tps
 
 POURCENTAGE =100
 """question 1"""
@@ -124,10 +125,14 @@ def stochastique(filename, maxIter):
         
     return solution_glouton, score_glouton 
         
-#dataCenter, pools, servers, availableSlots = read_perc('dc.in',POURCENTAGE)        
-#solution_glouton, score_glouton = stochastique('dc.in', 800)         
+
+#dataCenter, pools, servers, availableSlots = read_perc('dc.in',POURCENTAGE)  
+#start=tps.clock()      
+#solution_glouton, score_glouton = stochastique('dc.in', 800)
+#print("TEMPS : ", tps.clock()-start)         
 #displaySolution(solution_glouton, dataCenter, servers)
 #print("Score final ",score_glouton)
+
 
 #dataCenter, pools, servers, availableSlots = read_perc('test1.txt',POURCENTAGE)        
 #solution_glouton, score_glouton = stochastique('test1.txt', 0)         

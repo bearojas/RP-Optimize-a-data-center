@@ -6,6 +6,7 @@ Created on Fri Apr 14 12:27:59 2017
 """
 from toolsRP import *
 from copy import deepcopy
+import time as tps
 
 POURCENTAGE =100
 
@@ -101,11 +102,15 @@ def glouton_1(dc, pools, serv, availableSlots ) :
 #displaySolution(solution_glouton, dc, servers)
 #saveSolution('test0.txt', solution_glouton)
 
-dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
-displayInstance(dc, pools, servers)
-solution_glouton, solution_score = glouton_1(dc, pools, servers, availableSlots)
-displaySolution(solution_glouton, dc, servers)
-print("Score de cette solution :", solution_score)
+
+#dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+#displayInstance(dc, pools, servers)
+#start = tps.clock()
+#solution_glouton, solution_score = new_glouton_1(dc, pools, servers, availableSlots)
+#print("TEMPS ",tps.clock()-start)
+#displaySolution(solution_glouton, dc, servers)
+#print("Score de cette solution :", solution_score)
+
 
 
 
@@ -155,8 +160,10 @@ def glouton_2(dataCenter, pools, servers, availableSlots ):
 #print solution_glouton
 #print solution_score
 #saveSolution('test0.txt', solution_glouton)
-#
+
 #dc, pools, servers, availableSlots = read_perc('dc.in', POURCENTAGE)
+#start = tps.clock()
 #solution_glouton1, solution_score1, center = glouton_2(dc, pools, servers, availableSlots)
+#print("TEMPS ",tps.clock()-start)
 #displaySolution(solution_glouton1, dc, servers)
 #print("Score de cette solution :", solution_score1)
