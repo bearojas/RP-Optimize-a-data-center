@@ -148,11 +148,14 @@ def possible_servers(dataCenter, servers, slot, first = 0):
 #print (availableSlots)
 
 
-"""calcul du score"""
-def calculScore(servers_alloc, servers, pools, rows):
+"""calcul du score """
+def calculScore(servers_alloc, servers, pools, rows, moreInfo = 0):
     
     #tableau des scores indexé par les groupes
-    pools_score = [0]*pools    
+    pools_score = [0]*pools
+    #tableau des rangees responsables du score du groupe indexé par les groupes
+    failing_rows = [0]*pools   
+    
     #pour chaque pool, on récupère la somme minimum assurée par chaque rangée - 1
     for p in range(pools) :
         #récuperer l'ensemble des serveurs de ce groupe
@@ -163,12 +166,25 @@ def calculScore(servers_alloc, servers, pools, rows):
                 sum_rows[servers_alloc[j][0]] += servers[j][2]
         # on fait la somme de toutes les lignes minus une ligne a chaque fois et on garde le min
         min_sum = 9999999
+
         for r in range(rows): 
             somme = sum(sum_rows)
             somme-=sum_rows[r]
             if somme < min_sum:
                 min_sum = somme
+                min_row = r
+                
+                
         pools_score[p] = min_sum
+        failing_rows[p] = min_row
+    
+    pool_min = min(xrange(len(pools_score)), key=pools_score.__getitem__)
+    failing_row = failing_rows[pool_min]
+#    print "rangee responsable du score: ", failing_row
+#    print "pool responsable: ", pool_min
+    
+    if moreInfo:
+        return min(pools_score), pool_min, failing_row
         
     return min(pools_score)
     
@@ -181,5 +197,18 @@ def getUnusedServers(servers_alloc) :
         if servers_alloc[i][0]=='x':
             un_servers.append(i)
     return un_servers
+    
+#chaque server dans servers_alloc est de la forme [row, slot, pool]
+#retourne un dico qui associe a chaque pool une liste de serveurs
+#de la forme [id, row, slot]
+def servers_per_pool(servers_alloc, pools):
+    #initialisation du dico ou les cles sont les pools
+    dico = { key : [] for key in range(pools)}
+    
+    for i in range(len(servers_alloc)):
+        if servers_alloc[i][0] != 'x':
+            dico[servers_alloc[i][2]].append([i, servers_alloc[i][0], servers_alloc[i][1]])
+    
+    return dico
     
 
